@@ -1,13 +1,21 @@
 void exibirAtualizarForm(){
 		char *opcoes[] = {"CANCELA","BUSCAR"};
-		exibirMenu(24, 80, (LINES-25)/2, (COLS-81)/2, opcoes, 2);
 		char *campos[] = {"Nome:"," " };
+
+		exibirMenu(24, 80, (LINES-25)/2, (COLS-81)/2, opcoes, 2);
 		exibirFormulario(24, 80, (LINES)/2, (COLS-81)/2, campos, size(campos));
 		atual[1] = true;
 }
-
 void confirmaAtualiza(){
+	char *objetivo[14];
+	Treino *treino;
 	Pessoa *pessoa;
+	float imc;
+	char cond[40];
+	char *opcoes[]= {"VOLTAR"};
+	
+	
+
 	Medidas *medidas = novoMedidas((float)atof(field_buffer(campo[5],0)),
 								   (float)atof(field_buffer(campo[7],0)),
 								   atof(field_buffer(campo[9],0)),
@@ -22,27 +30,21 @@ void confirmaAtualiza(){
 								   );
 					
 		
-	Treino *treino;
-	pessoa = novaPessoa(field_buffer(campo[1],0),atoi(field_buffer(campo[2],0)),medidas,treino,atoi(field_buffer(campo[3],0)));
-	float imc = calculaImc(medidas->peso,medidas->altura);
-	pessoa->imc = imc;
-	char cond[40];
-	condicaoImc(imc,pessoa->sexo,cond);
+	
+	defineObjetivo(sistema,medidas,atoi(field_buffer(campo[2],0)),objetivo);
+	pessoa = novaPessoa(field_buffer(campo[1],0),atoi(field_buffer(campo[2],0)),medidas,atoi(field_buffer(campo[3],0)));
+	pessoa->treino = geraTreino(sistema,objetivo);
+	
+	strcpy(pessoa->objetivo,objetivo);
+
     atualizaCadastro(sistema,pessoa);
-	char *opcoes[]= {"VOLTAR"};
+	
 	exibirMenu(24, 80, (LINES-25)/2, (COLS-81)/2, opcoes, size(opcoes));
-	char *campos[] = {""};
-	exibirFormulario(24, 80, (LINES-25)/2, (COLS-81)/2, campos, size(campos));
-	unpost_form(formulario);
-	for (int i = 0; campo[i] != NULL; i++) {
-		free_field(campo[i]);
-	}
-	free_form(formulario);
-	delwin(janelaFormulario);
-	form = false;
+	apagaForm();
+
 	mvwprintw(janelaFormulario,(LINES-25)/2, (COLS-80)/2, "USUARIO ATUALIZADO:");			
 	mvwprintw(janelaFormulario, ((LINES-25)/2)+1, (COLS-80)/2,"%s",pessoa->nome);
-	mvwprintw(janelaFormulario,((LINES-25)/2)+2, (COLS-80)/2,"Seu imc é :%.2f ele está %s",imc,cond);
+
 	refresh();
 }
 void buscarAtualiza(){
@@ -61,15 +63,15 @@ void buscarAtualiza(){
 			sprintf(dados[4], "%f", pessoa->medidas->bracoEsquerdo);
 			sprintf(dados[5], "%f", pessoa->medidas->pernaDireita);
 			sprintf(dados[6], "%f", pessoa->medidas->pernaEsquerda);
-			sprintf(dados[6], "%f", pessoa->medidas->panturrilhaDireita);
-			sprintf(dados[7], "%f", pessoa->medidas->panturrilhaEsquerda);
+			sprintf(dados[7], "%f", pessoa->medidas->panturrilhaDireita);
+			sprintf(dados[8], "%f", pessoa->medidas->panturrilhaEsquerda);
 			sprintf(dados[9], "%f", pessoa->medidas->abdomen);
 			sprintf(dados[10], "%f", pessoa->medidas->cintura);
 			sprintf(dados[11], "%f", pessoa->medidas->peito);
 			char *campos[] = {"Nome:",pessoa->nome, 
 						  "Sexo (0 F, 1 M):",dados[0], 
 						  "Peso:",dados[1], 
-						  "Altura em cm",dados[2],
+						  "Altura em metros",dados[2],
 						  "Braço Direito",dados[3],
 						  "Braço Esquerdo",dados[4],
 						  "Perna Direita",dados[5],
@@ -84,16 +86,8 @@ void buscarAtualiza(){
 	}else{
 		char *opcoes[]= {"VOLTAR"};
 		exibirMenu(24, 80, (LINES-25)/2, (COLS-81)/2, opcoes, size(opcoes));
-		char *campos[] = {""};
-		exibirFormulario(24, 80, (LINES-25)/2, (COLS-81)/2, campos, size(campos));
-		unpost_form(formulario);
-		for (int i = 0; campo[i] != NULL; i++) {
-			free_field(campo[i]);
-		}
-		free_form(formulario);
-		delwin(janelaFormulario);
+		apagaForm();
 		mvwprintw(janelaFormulario,(LINES-25)/2, (COLS-80)/2, "Usuário Não Encontrado:");			
-		form = false;
 	}
 	
 	

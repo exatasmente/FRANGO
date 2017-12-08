@@ -1,15 +1,13 @@
 typedef struct equipamento{    
-    char *nomeEquipamento;
+    char *nomeEquipamento[50];
     int series;
     int repeticoes;
-    int carga;
-
+    int grupo;
 }Equipamento;
+typedef struct exercicio{
+    char *grupamento[30];
+    Equipamento *equipamentos[3];
 
-typedef struct Exercicio{
-    char *grupamento;
-    Equipamento **equipamentos;
-    int qtE;
 }Exercicio;
 
 typedef struct treino{
@@ -17,33 +15,9 @@ typedef struct treino{
 
 }Treino;
 
-Exercicio *novoExercicio(char *grupamento,Equipamento **equipamento){
-    Exercicio *novo;
-    novo = (Exercicio*) malloc(sizeof(Exercicio));
-
-    novo->grupamento  = grupamento;
-    novo->equipamentos = equipamento;
-    novo->qtE = sizeof(equipamento)/sizeof(Equipamento*);
-
-    return novo;
-}
 
 Treino *novoTreino(){
     Treino *novo;
     novo = (Treino*) malloc(sizeof(Treino));
-    for(int i = 0 ; i < 5 ; i++){
-        novo->exercicios[i] = (Exercicio*) malloc(sizeof(Exercicio));
-    }
-    return novo;
-}
-
-Equipamento *novoEquipamento(char *nome,int series, int repeticoes , int carga){
-    Equipamento *novo;
-    novo = (Equipamento*) malloc(sizeof(Equipamento));
-    novo->nomeEquipamento = nome;
-    novo->series = series;
-    novo->repeticoes = repeticoes;
-    novo->carga = carga;
-
     return novo;
 }

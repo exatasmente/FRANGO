@@ -1,4 +1,3 @@
-
 typedef struct medidas{
     float peso;
     float altura;
@@ -14,35 +13,34 @@ typedef struct medidas{
 }Medidas;
 
 typedef struct pessoa{
-    char *nome;
-    char *objetivo;
+    char *nome[50];
+    char *objetivo[15];
     float imc;
     int matricula;
     int sexo;
     Medidas *medidas;
     Treino *treino;
-    int ativo;
 }Pessoa;
 
-float calculaImc(float peso,float altura);
-Pessoa *novaPessoa(char *nome,int matricula,Medidas *medidas,Treino *treino,int sexo);
+
+Pessoa *novaPessoa(char *nome,int matricula,Medidas *medidas,int sexo);
 Medidas *novoMedidas(float peso, float altura, float bracoDireito, float bracoEsquerdo, float pernaDireita, float pernaEsquerda, float panturrilhaDireita, float panturrilhaEsquerda, float abdomen, float cintura,float peito);
 void condicaoImc(float imc,int sexo, char *ret);
+float calculaImc(float peso,float altura);
 
 
-Pessoa *novaPessoa(char *nome,int matricula,Medidas *medidas,Treino *treino,int sexo){
+Pessoa *novaPessoa(char *nome,int matricula,Medidas *medidas,int sexo){
     Pessoa *nova;
     nova = (Pessoa*) malloc(sizeof(Pessoa));
-    nova->nome = nome;
+    strcpy(nova->nome,nome);
     nova->matricula = matricula;
     nova->medidas = medidas;
-    nova->treino = treino;
+    
     nova->sexo = sexo;
     nova->imc = calculaImc(medidas->peso,medidas->altura);
    
     return nova;
 }
-
 Medidas *novoMedidas(float peso,float altura, float bracoDireito, float bracoEsquerdo,float pernaDireita, float pernaEsquerda, float panturrilhaDireita, float panturrilhaEsquerda, float abdomen, float cintura, float peito){
     Medidas *novo;
     novo = (Medidas*) malloc(sizeof(Medidas));
@@ -60,13 +58,10 @@ Medidas *novoMedidas(float peso,float altura, float bracoDireito, float bracoEsq
     novo->peito = peito;
     return novo;
 }
-
-
 float calculaImc(float peso,float altura){
     
     return peso / pow(altura,2);
 }
-
 void condicaoImc(float imc,int sexo,char ret[]){
    
     if(sexo){
@@ -90,7 +85,7 @@ void condicaoImc(float imc,int sexo,char ret[]){
     }else{
       
         if(imc < 19.1){
-            strcpy(&ret,"Abaixo do Ideal");
+            strcpy(ret,"Abaixo do Ideal");
 
         }else if(imc < 25.8){
             strcpy(ret,"Ideal");
@@ -102,7 +97,7 @@ void condicaoImc(float imc,int sexo,char ret[]){
                   strcpy(ret,"acima do Ideal");
             
         }else{
-            strcpy(&ret,"muito acima do Ideal");
+            strcpy(ret,"muito acima do Ideal");
             
         }
     

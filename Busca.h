@@ -1,3 +1,4 @@
+Pessoa *pessoa;
 void exibirBuscarForm(){
 		char *opcoes[] = {"CANCELA","CONFIRMA"};
 		exibirMenu(24, 80, (LINES-25)/2, (COLS-81)/2, opcoes, 2);
@@ -6,32 +7,86 @@ void exibirBuscarForm(){
 		atual[3] = true;
 }
 void confirmaBuscar(){
-	
-	Pessoa *pessoa = buscarPessoaNome(sistema,field_buffer(campo[1],0));
-
-	char *opcoes[]= {"VOLTAR"};
-	exibirMenu(24, 80, (LINES-25)/2, (COLS-81)/2, opcoes, size(opcoes));
-	char *campos[] = {""};
-	exibirFormulario(24, 80, (LINES-25)/2, (COLS-81)/2, campos, size(campos));
-	unpost_form(formulario);
-	for (int i = 0; campo[i] != NULL; i++) {
-		free_field(campo[i]);
-	}
-	free_form(formulario);
-	delwin(janelaFormulario);
+	pessoa = buscarPessoaNome(sistema,field_buffer(campo[1],0));
 	form = false;
+	
 	if(pessoa != NULL){
-		mvwprintw(janelaFormulario,(LINES-25)/2, (COLS-60)/2, "Usuário Encontrado:");			
-		mvwprintw(janelaFormulario, ((LINES-25)/2)+1, (COLS-60)/2,"Nome :%s",pessoa->nome);
-		mvwprintw(janelaFormulario, ((LINES-25)/2)+2, (COLS-60)/2,"Sexo : %s",pessoa->sexo == 0 ? "Feminino" : "Masculino");
-		mvwprintw(janelaFormulario, ((LINES-25)/2)+3, (COLS-60)/2,"Peso : %.2f",pessoa->medidas->peso);
-		mvwprintw(janelaFormulario, ((LINES-25)/2)+4, (COLS-60)/2,"Altura : %.2f",pessoa->medidas->altura);
-		mvwprintw(janelaFormulario, ((LINES-25)/2)+5, (COLS-60)/2,"IMC : %.2f",pessoa->imc);		
-
+		char *condicao[20];
+		condicaoImc(pessoa->imc,pessoa->sexo,condicao);
+		char *opcoes[]= {"VOLTAR","EXERCICIOS"};
+		exibirMenu(24, 80, (LINES-25)/2, (COLS-81)/2, opcoes, size(opcoes));
+		apagaForm();
+		mvwprintw(janelaFormulario,2, 3, "Usuário Encontrado:");			
+		
+		mvwprintw(janelaFormulario,3, 3,"Nome :%s",pessoa->nome);
+		mvwprintw(janelaFormulario,4, 3,"Sexo : %s",pessoa->sexo == 0 ? "Feminino" : "Masculino");
+		mvwprintw(janelaFormulario,5, 3,"Peso : %.2f",pessoa->medidas->peso);
+		mvwprintw(janelaFormulario,6, 3,"Altura : %.2f",pessoa->medidas->altura);
+		mvwprintw(janelaFormulario,7, 3,"IMC : %.2f %s",pessoa->imc,condicao);
+		mvwprintw(janelaFormulario,8, 3,"Objetivo: %s",pessoa->objetivo);
+		
 	}else{
+		char *opcoes[]= {"VOLTAR"};
+		exibirMenu(24, 80, (LINES-25)/2, (COLS-81)/2, opcoes, size(opcoes));
+		apagaForm();
 		mvwprintw(janelaFormulario,(LINES-25)/2, (COLS-80)/2, "Usuário Não Encontrado:");			
 	}
 	refresh();
+}
+void exibeExecicios(){
+	char *opcoes[]= {"VOLTAR"};
+	exibirMenu(24, 80, (LINES-25)/2, (COLS-81)/2, opcoes, size(opcoes));
+	apagaForm();
+	int colunas = 3;
+	int linha = 1;
+	char *dias[] = {"SEGUNDA","TERCA","QUARTA","QUINTA","SEXTA"};
+	mvwprintw(janelaFormulario,linha, colunas,"%s",dias[0]);
+	for(int j = 0 ; j < 3 ; j++){
+		mvwprintw(janelaFormulario,linha+j+1, colunas,"%s : %dx%d",
+		pessoa->treino->exercicios[0]->equipamentos[j]->nomeEquipamento,
+		pessoa->treino->exercicios[0]->equipamentos[j]->series,
+		pessoa->treino->exercicios[0]->equipamentos[j]->repeticoes
+		);			
+	}
+	linha = 6;
+	mvwprintw(janelaFormulario,linha, colunas,"%s",dias[1]);
+	for(int j = 0 ; j < 3 ; j++){
+		mvwprintw(janelaFormulario,linha+j+1, colunas,"%s : %dx%d",
+		pessoa->treino->exercicios[1]->equipamentos[j]->nomeEquipamento,
+		pessoa->treino->exercicios[1]->equipamentos[j]->series,
+		pessoa->treino->exercicios[1]->equipamentos[j]->repeticoes
+		);			
+	}
+	linha = 12;
+	mvwprintw(janelaFormulario,linha, colunas,"%s",dias[2]);
+	for(int j = 0 ; j < 3 ; j++){
+		mvwprintw(janelaFormulario,linha+j+1, colunas,"%s : %dx%d",
+		pessoa->treino->exercicios[2]->equipamentos[j]->nomeEquipamento,
+		pessoa->treino->exercicios[2]->equipamentos[j]->series,
+		pessoa->treino->exercicios[2]->equipamentos[j]->repeticoes
+		);			
+	}
+	linha = 1;
+	colunas = 40;
+	mvwprintw(janelaFormulario,linha, colunas,"%s",dias[3]);
+	for(int j = 0 ; j < 3 ; j++){
+		mvwprintw(janelaFormulario,linha+j+1, colunas,"%s : %dx%d",
+		pessoa->treino->exercicios[3]->equipamentos[j]->nomeEquipamento,
+		pessoa->treino->exercicios[3]->equipamentos[j]->series,
+		pessoa->treino->exercicios[3]->equipamentos[j]->repeticoes
+		);			
+	}
+	linha = 6;
+	mvwprintw(janelaFormulario,linha, colunas,"%s",dias[4]);
+	for(int j = 0 ; j < 3 ; j++){
+		mvwprintw(janelaFormulario,linha+j+1, colunas,"%s : %dx%d",
+		pessoa->treino->exercicios[4]->equipamentos[j]->nomeEquipamento,
+		pessoa->treino->exercicios[4]->equipamentos[j]->series,
+		pessoa->treino->exercicios[4]->equipamentos[j]->repeticoes
+		);			
+	}
+		
+	
 }
 void controleBuscar(char *nome){
 	if(strcmp(nome, "CANCELA") == 0 ){
@@ -40,5 +95,7 @@ void controleBuscar(char *nome){
 		confirmaBuscar();	
 	}else if(strcmp(nome,"VOLTAR") == 0){
 		voltarMenu(0);
+	}else if(strcmp(nome,"EXERCICIOS") == 0){
+		exibeExecicios();
 	}
 }
