@@ -75,7 +75,7 @@ Estrutura responsavél por armazendar os clientes e equipamentos dentro da aplic
 
 # Esquema das Estruturas
 
-<img src="Documents/Esquema.png">
+<img src="Esquema.png">
 
 # Funções e Procedimentos da Biblioteca Ncurses e suas dependênicas
 
